@@ -1,0 +1,124 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+rom              0x00880800         0x0007f800         xr
+ram              0x00ff0000         0x00010000         xw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD crt0.o
+LOAD cd.o
+LOAD kos.o
+LOAD main.o
+                0x00000000                __DYNAMIC = 0x0
+                0x01000000                PROVIDE (__stack, 0x1000000)
+
+.text           0x00880800      0x4e0 load address 0x00000000
+                0x00880800                __text_start = .
+ *(.text)
+ .text          0x00880800      0x228 crt0.o
+                0x00880800                _start
+                0x008809ec                write_byte
+                0x008809f8                write_word
+                0x00880a04                write_long
+                0x00880a10                read_byte
+                0x00880a18                read_word
+                0x00880a20                read_long
+ .text          0x00880a28      0x1b4 cd.o
+                0x00880a28                Sub_Start
+                0x00880bdc                Sub_End
+ .text          0x00880bdc       0xb0 kos.o
+                0x00880bdc                Kos_Decomp
+ .text          0x00880c8c       0x14 main.o
+                0x00880c8c                InitCD
+                0x00880c90                main
+ *(.text.*)
+ *(.gnu.linkonce.t.*)
+                0x00880ca0                . = ALIGN (0x10)
+                0x00880ca0                __INIT_SECTION__ = .
+ *(.init)
+                0x00880ca0        0x2 SHORT 0x4e75
+                0x00880cb0                . = ALIGN (0x10)
+ *fill*         0x00880ca2        0xe 00
+                0x00880cb0                __FINI_SECTION__ = .
+ *(.fini)
+                0x00880cb0        0x2 SHORT 0x4e75
+ *(.eh_frame_hdr)
+ *(.eh_frame)
+ *(.gcc_except_table)
+ *(.jcr)
+                0x00880cc0                . = ALIGN (0x10)
+ *fill*         0x00880cb2        0xe 00
+                0x00880cc0                __CTOR_LIST__ = .
+                0x00880cc0                ___CTOR_LIST__ = .
+                0x00880cc0        0x4 LONG 0x0 (((__CTOR_END__ - __CTOR_LIST__) / 0x4) - 0x2)
+ *(SORT(.ctors.*))
+ *(.ctors)
+                0x00880cc4        0x4 LONG 0x0
+                0x00880cc8                __CTOR_END__ = .
+                0x00880cd0                . = ALIGN (0x10)
+ *fill*         0x00880cc8        0x8 00
+                0x00880cd0                __DTOR_LIST__ = .
+                0x00880cd0                ___DTOR_LIST__ = .
+                0x00880cd0        0x4 LONG 0x0 (((__DTOR_END__ - __DTOR_LIST__) / 0x4) - 0x2)
+ *(SORT(.dtors.*))
+ *(.dtors)
+                0x00880cd4        0x4 LONG 0x0
+                0x00880cd8                __DTOR_END__ = .
+ *(.rdata)
+ *(.rodata)
+ *(.rodata.*)
+ *(.gnu.linkonce.r.*)
+                0x00880ce0                . = ALIGN (0x10)
+ *fill*         0x00880cd8        0x8 00
+                0x00880ce0                __text_end = .
+                0x000004e0                __text_size = (__text_end - __text_start)
+
+.data           0x00ff0000      0x480 load address 0x000004e0
+                0x00ff0000                __data_start = .
+ *(.data)
+ .data          0x00ff0000      0x480 crt0.o
+                0x00ff0000                do_main
+                0x00ff047c                gen_lvl2
+                0x00ff047e                cd_ok
+ .data          0x00ff0480        0x0 cd.o
+ .data          0x00ff0480        0x0 kos.o
+ .data          0x00ff0480        0x0 main.o
+ *(.data.*)
+ *(.gnu.linkonce.d.*)
+ *(.lit8)
+ *(.lit4)
+ *(.sdata)
+ *(.sdata.*)
+ *(.gnu.linkonce.s.*)
+                0x00ff0480                . = ALIGN (0x8)
+                0x00ff0480                __data_end = .
+                0x00000480                __data_size = (__data_end - __data_start)
+
+.bss            0x00ff0480        0x0 load address 0x00000960
+                0x00ff0480                __bss_start = .
+ *(.bss)
+ .bss           0x00ff0480        0x0 crt0.o
+ .bss           0x00ff0480        0x0 cd.o
+ .bss           0x00ff0480        0x0 kos.o
+ .bss           0x00ff0480        0x0 main.o
+ *(.bss.*)
+ *(.gnu.linkonce.b.*)
+ *(.sbss)
+ *(.sbss.*)
+ *(.gnu.linkonce.sb.*)
+ *(.scommon)
+ *(COMMON)
+                0x00ff0480                . = ALIGN (0x8)
+                0x00ff0480                end = .
+                0x00ff0480                _end = end
+                0x00ff0480                __end = _end
+                0x00ff0480                __bss_end = .
+                0x00000000                __bss_size = (__bss_end - __bss_start)
+OUTPUT(m68k.elf elf32-m68k)
+
+.comment        0x00000000       0x11
+ .comment       0x00000000       0x11 main.o
+                                 0x12 (size before relaxing)
