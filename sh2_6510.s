@@ -571,20 +571,18 @@ op_0A:		! ASL A
 op_06:		! ASL zp
 	ZP_ADDR r9,r9
 	READ_BYTE r1,r9
-	ASL r1
-	mov.l asl_write_byte,r2
-	jsr @r2
-	mov r9,r0
+	ASL 	r1
+	mov 	r9,r0
+	mov.b 	r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 
 op_16:		! ASL zp,X
 	ZPX_ADDR r9,r9
 	READ_BYTE r1,r9
-	ASL r1
-	mov.l asl_write_byte,r2
-	jsr @r2
-	mov r9,r0
+	ASL 	r1
+	mov 	r9,r0
+	mov.b 	r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 
@@ -815,9 +813,8 @@ op_C6:		! DEC zp
 	READ_BYTE r1,r3
 	add #-1,r1
 	UPDATE_NZ r1
-	mov.l dec_write_byte,r9
-	jsr @r9
 	mov r3,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 	
@@ -826,9 +823,8 @@ op_D6:		! DEC zp,X
 	READ_BYTE r1,r3
 	add #-1,r1
 	UPDATE_NZ r1
-	mov.l dec_write_byte,r9
-	jsr @r9
 	mov r3,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 6
 
@@ -909,11 +905,9 @@ op_E6:		! INC zp
 	ZP_ADDR r3,r1
 	READ_BYTE r1,r3
 	add #1,r1
-!	extu.b r1,r1
 	UPDATE_NZ r1
-	mov.l inc_write_byte,r9
-	jsr @r9
 	mov r3,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 	
@@ -921,11 +915,9 @@ op_F6:		! INC zp,X
 	ZPX_ADDR r3,r1
 	READ_BYTE r1,r3
 	add #1,r1
-!	extu.b r1,r1
 	UPDATE_NZ r1
-	mov.l inc_write_byte,r9
-	jsr @r9
 	mov r3,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 6
 	
@@ -933,7 +925,6 @@ op_EE:		! INC abs
 	ABS_ADDR r3
 	READ_BYTE r1,r3
 	add #1,r1
-!	extu.b r1,r1
 	UPDATE_NZ r1
 	mov.l inc_write_byte,r9
 	jsr @r9
@@ -945,7 +936,6 @@ op_FE:		! INC abs,X
 	ABSX_ADDR r3
 	READ_BYTE r1,r3
 	add #1,r1
-!	extu.b r1,r1
 	UPDATE_NZ r1
 	mov.l inc_write_byte,r9
 	jsr @r9
@@ -1134,9 +1124,8 @@ op_46:		! LSR zp
 	READ_BYTE r1,r9
 	extu.b 	r1,r1
 	LSR 	r1
-	mov.l 	lsr_write_byte, r2
-	jsr 	@r2
 	mov 	r9,r0
+	mov.b 	r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 
@@ -1145,9 +1134,8 @@ op_56:		! LSR zp,X
 	READ_BYTE r1,r9
 	extu.b r1,r1
 	LSR 	r1
-	mov.l 	lsr_write_byte, r2
-	jsr 	@r2
 	mov 	r9,r0
+	mov.b 	r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 6
 
@@ -1261,9 +1249,8 @@ op_26:		! ROL zp
 	ZP_ADDR r9,r9
 	READ_BYTE r1,r9
 	ROL r1
-	mov.l ror_write_byte, r2
-	jsr @r2
 	mov r9,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 
@@ -1271,9 +1258,8 @@ op_36:		! ROL zp,X
 	ZPX_ADDR r9,r9
 	READ_BYTE r1,r9
 	ROL r1
-	mov.l ror_write_byte, r2
-	jsr @r2
 	mov r9,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 6
 
@@ -1311,9 +1297,8 @@ op_66:		! ROR zp
 	READ_BYTE r1,r9
 	extu.b 	r1,r1
 	ROR r1
-	mov.l ror_write_byte, r2
-	jsr @r2
 	mov r9,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 5
 
@@ -1322,9 +1307,8 @@ op_76:		! ROR zp,X
 	READ_BYTE r1,r9
 	extu.b 	r1,r1
 	ROR r1
-	mov.l ror_write_byte, r2
-	jsr @r2
 	mov r9,r0
+	mov.b r1,@(r0,r14)
 	RETURN
 	ADD_CYCLES 6
 	
@@ -1440,18 +1424,14 @@ op_78:		! SEI
 
 ! == STA ==
 op_85:		! STA zp
-	mov.l	sta_write_byte,r9
 	ZP_ADDR	r0,r1
-	jsr		@r9
-	mov		r5,r1
+	mov.b 	r5,@(r0,r14)
 	RETURN
 	ADD_CYCLES 3
 	
 op_95:		! STA zp,X
-	mov.l	sta_write_byte,r9
 	ZPX_ADDR r0,r1
-	jsr		@r9
-	mov		r5,r1
+	mov.b 	r5,@(r0,r14)
 	RETURN
 	ADD_CYCLES 4
 
@@ -1506,18 +1486,14 @@ sta_write_byte: .long _sidMapper_writeByte
 
 ! == STX ==
 op_86:		! STX zp
-	mov.l	stx_write_byte,r9
 	ZP_ADDR	r0,r1
-	jsr		@r9
-	mov		r6,r1
+	mov.b 	r6,@(r0,r14)
 	RETURN
 	ADD_CYCLES 3
 
 op_96:		! STX zp,Y
-	mov.l	stx_write_byte,r9
 	ZPY_ADDR r0,r1
-	jsr		@r9
-	mov		r6,r1
+	mov.b 	r6,@(r0,r14)
 	RETURN
 	ADD_CYCLES 4
 
@@ -1535,18 +1511,14 @@ stx_write_byte: .long _sidMapper_writeByte
 
 ! == STY ==
 op_84:		! STY zp
-	mov.l	sty_write_byte,r9
 	ZP_ADDR	r0,r1
-	jsr		@r9
-	mov		r7,r1
+	mov.b r7,@(r0,r14)
 	RETURN
 	ADD_CYCLES 3
 
 op_94:		! STY zp,X
-	mov.l	sty_write_byte,r9
 	ZPX_ADDR r0,r1
-	jsr		@r9
-	mov		r7,r1
+	mov.b r7,@(r0,r14)
 	RETURN
 	ADD_CYCLES 4
 
