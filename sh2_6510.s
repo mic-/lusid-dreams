@@ -452,10 +452,9 @@
 ! value in r1
 .macro PUSHB wb_func_label
 	mov		#1,r0
-	mov.l	\wb_func_label,r9
 	shll8	r0
-	jsr		@r9
 	add		r11,r0	! r0 = S + 0x100
+	mov.b 	r1,@(r0,r14)
 	add		#-1,r11
 .endm
 
@@ -464,13 +463,11 @@
 	extu.b	r1,r2
 	mov		#1,r0
 	shlr8	r1
-	mov.l	\wb_func_label,r9
 	shll8	r0
-	jsr		@r9
 	add		r11,r0	! r0 = S + 0x100
+	mov.b 	r1,@(r0,r14)
 	add		#-1,r0
-	jsr		@r9
-	extu.b	r2,r1
+	mov.b 	r2,@(r0,r14)
 	add		#-2,r11
 .endm
 	               
